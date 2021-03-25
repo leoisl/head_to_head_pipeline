@@ -12,9 +12,9 @@ for het_filter in het_filters:
     print(f"sed 's/pandora_output_pandora_paper_tag1/het_filter_{het_filter}/g' "
           f"/hps/nobackup/iqbal/leandro/pandora_versions/pandora_paper_roc/metadata/variant_calls_pandora_paper_tag1.{technology}.local_updates.csv > "
           f"/hps/nobackup/iqbal/leandro/pandora_versions/pandora_paper_roc/metadata/variant_calls_pandora_paper_tag1.{technology}.local_updates.het_filter_{het_filter}.csv")
-    print(f"sed 's/variant_calls_pandora_paper_tag1.{technology}.local_updates.csv/variant_calls_pandora_paper_tag1.{technology}.local_updates.het_filter_{het_filter}.csv/g' "
+    print(f"sed 's/variant_calls_pandora_paper_tag1.{technology}.csv/variant_calls_pandora_paper_tag1.{technology}.local_updates.het_filter_{het_filter}.csv/g' "
           f"/hps/nobackup/iqbal/leandro/pandora_versions/pandora_paper_roc/config.pandora_paper_tag1.{technology}.yaml | "
-          f"sed 's/cluster_fix_with_precompiled_binaries/het_filter_{het_filter}/g' "
+          f"sed 's/analysis_output_{technology}_pandora_paper_tag1/analysis_output_{technology}_pandora_paper_tag1_het_filter_{het_filter}/g' "
           f"> /hps/nobackup/iqbal/leandro/pandora_versions/pandora_paper_roc/config.pandora_paper_tag1.{technology}.het_filter_{het_filter}.yaml")
 
 print("\n\n# To be run after, snakemake pipeline, one by one:")
