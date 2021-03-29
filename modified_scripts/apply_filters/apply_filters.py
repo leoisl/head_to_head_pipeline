@@ -210,7 +210,9 @@ class Filter:
             fraction_read_support(variant, sample_idx=i)
             for i in range(len(variant.genotypes))
         ]
-        return [frs <= self.min_frs if self.min_frs else False for frs in supports]
+
+        low_supports = [frs <= self.min_frs if self.min_frs else False for frs in supports]
+        return low_supports
 
     def _is_high_gaps(self, variant: Variant) -> List[bool]:
         gaps = [get_gaps(variant, sample_idx=i) for i in range(len(variant.genotypes))]
@@ -504,6 +506,7 @@ def main(
         is_multisample=is_multisample,
     )
 
+    assessor.add_filters_to_header(vcf_reader)
     vcf_writer = Writer(out_vcf, tmpl=vcf_reader)
 
     stats = Counter()
@@ -512,17 +515,27 @@ def main(
     for variant in vcf_reader:
         filter_statuses = assessor.filter_status(variant)
 
+        print_filtered_record = False
         for sample_index, filter_status in enumerate(filter_statuses):
             is_filtered_out = filter_status != str(Tags.Pass)
             if is_filtered_out:
-                variant.genotypes[sample_index] = null_genotype
+                if variant.genotypes[sample_index] != null_genotype:
+                    print_filtered_record = True
+                # variant.genotypes[sample_index] = null_genotype
+                pass
+
+        if print_filtered_record:
+            # comment if you don't want the tags in the fields
+            ft_tags_to_write = filter_statuses
+            variant.set_format(
+                str(Tags.FormatFilter), np.array(ft_tags_to_write, dtype=np.bytes_)
+            )
 
         # it is necessary to reassign the genotypes field
         # so that the variant object reprocess it and future calls
         # to functions like v.genotype.array() properly reflect
         # the changed genotypes
-        variant.genotypes = variant.genotypes
-
+        # variant.genotypes = variant.genotypes
         vcf_writer.write_record(variant)
 
         stats.update(
