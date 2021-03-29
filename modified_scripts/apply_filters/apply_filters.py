@@ -24,8 +24,8 @@ def validate_fraction(ctx, param, value):
 
 
 class Tags(Enum):
-    FwdCovg = "MED_FWD_COVG"
-    RevCovg = "MED_REV_COVG"
+    FwdCovg = "MEAN_FWD_COVG"
+    RevCovg = "MEAN_REV_COVG"
     LowCovg = "ld"
     HighCovg = "hd"
     StrandBias = "sb"
