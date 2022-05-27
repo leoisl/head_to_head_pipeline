@@ -44,7 +44,7 @@ truth_eval_dir = Path("truth_eval").resolve()
 SITES = samplesheet["site"]
 SAMPLES = samplesheet["sample"]
 output_files = set()
-output_files.add(concordance_dir / "alt_concordance.html")
+# output_files.add(concordance_dir / "alt_concordance.html")
 FILTER_LOGS = set()
 VARIFIER_JSONS = set()
 for idx, row in samplesheet.iterrows():
@@ -69,14 +69,14 @@ for idx, row in samplesheet.iterrows():
         )
 
 output_files.add(truth_eval_dir / "truth_snp_eval.png")
-output_files.add(distance_dir / "dotplot.html")
-output_files.add(distance_dir / "close_dotplot.html")
+# output_files.add(distance_dir / "dotplot.html")
+# output_files.add(distance_dir / "close_dotplot.html")
 output_files.add(distance_dir / "mixed.matrix.csv")
 output_files.add(distance_dir / "mixed_self_distance.png")
 output_files.add(distance_dir / "mixed.dotplot.png")
 output_files.add(distance_dir / "bcftools.dotplot.png")
-for caller in ["bcftools", "compass"]:
-    output_files.add(distance_dir / f"{caller}.heatmap.html")
+# for caller in ["bcftools", "compass"]:
+#    output_files.add(distance_dir / f"{caller}.heatmap.html")
 
 
 # ======================================================
@@ -102,10 +102,10 @@ rule index_reference:
         H37RV["genome"] + ".fai",
     log:
         rule_log_dir / "index_reference.log",
-    container:
-        containers["conda"]
-    wrapper:
-        "0.63.0/bio/samtools/faidx"
+    conda:
+        envs["aln_tools"]
+    shell:
+        "samtools faidx --fai-idx {output} {input}"
 
 
 rule map_nanopore:
