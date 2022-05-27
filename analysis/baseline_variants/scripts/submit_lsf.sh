@@ -12,21 +12,6 @@ fi
 MEMORY=4000
 THREADS=4
 PROFILE="lsf"
-BINDS="/tmp,$HOME"
-case $HOSTNAME in
-    *noah*)
-        BINDS+=",/scratch,/hps/nobackup/research/zi,/nfs/research1/zi"
-        ;;
-    *codon*)
-        BINDS+=",/hps/scratch,/hps/nobackup/iqbal,/nfs/research/zi,$FASTSW_DIR --scratch /hps/scratch"
-        ;;
-    *)
-        echo "ERROR: HOSTNAME $HOSTNAME not recognised"
-        exit 1
-        ;;
-esac
-
-ARGS="--contain -B $BINDS"
 
 bsub -R "select[mem>$MEMORY] rusage[mem=$MEMORY] span[hosts=1]" \
     -M "$MEMORY" \
@@ -36,6 +21,6 @@ bsub -R "select[mem>$MEMORY] rusage[mem=$MEMORY] span[hosts=1]" \
     -J "$JOB_NAME" \
     snakemake --profile "$PROFILE" \
     --local-cores "$THREADS" \
-    "$@" --singularity-args "$ARGS"
+    "$@"
 
 exit 0
